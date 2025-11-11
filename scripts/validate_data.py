@@ -110,7 +110,8 @@ class DataValidator:
             List[pl.Expr]: List of expressions producing error messages for invalid codes.
         """
         exprs: List[pl.Expr] = []
-        for col in lf.schema:
+        schema = lf.collect_schema()
+        for col in schema:
             if col.startswith("country_code"):
                 exprs.append(
                     pl.when(pl.col(col).is_in(self.country_codes))
@@ -245,7 +246,8 @@ class DataValidator:
         """
         prefixes = ["canonical_name", "variation", "country_code"]
         exprs: List[pl.Expr] = []
-        for col in lf.schema:
+        schema = lf.collect_schema()
+        for col in schema:
             if any(col.startswith(p) for p in prefixes):
                 exprs.append(
                     pl.when(pl.col(col).is_null() | (pl.col(col).str.strip_chars() == ""))
@@ -265,8 +267,9 @@ class DataValidator:
         Returns:
             pl.Expr: Error expression for duplicate rows.
         """
+        schema = lf.collect_schema()
         prefixes = ["canonical_name", "variation", "country_code"]
-        cols_to_check = [col for col in lf.schema if any(col.startswith(p) for p in prefixes)]
+        cols_to_check = [col for col in schema if any(col.startswith(p) for p in prefixes)]
         return (
             pl.when(pl.struct(cols_to_check).is_duplicated())
             .then(pl.lit("DuplicateRowError: duplicate row found"))
@@ -284,8 +287,9 @@ class DataValidator:
         Returns:
             pl.Expr: Error expression for duplicate names.
         """
+        schema = lf.collect_schema()
         prefixes = ["canonical_name", "variation"]
-        cols = [col for col in lf.schema if any(col.startswith(p) for p in prefixes)]
+        cols = [col for col in schema if any(col.startswith(p) for p in prefixes)]
         col1, col2 = cols[:2]
         return (
             pl.when(
@@ -305,7 +309,8 @@ class DataValidator:
         Returns:
             pl.Expr: Expression concatenating all errors.
         """
-        error_cols = [c for c in lf.schema if "Error" in c]
+        schema = lf.collect_schema()
+        error_cols = [c for c in schema if "Error" in c]
         concat_expr = pl.concat_str([pl.col(c) for c in error_cols], separator="\n", ignore_nulls=True)
         return pl.when(concat_expr == "").then(None).otherwise(concat_expr).alias("Errors")
 
