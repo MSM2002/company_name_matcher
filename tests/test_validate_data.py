@@ -4,7 +4,7 @@ import pytest
 import polars as pl
 from pathlib import Path
 
-from validate_data import (
+from scripts.validate_data import (
     DataValidator,
     FileNameError,
 )
