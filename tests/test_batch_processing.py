@@ -133,7 +133,7 @@ def test_batch_find_matches_backward_compatibility(default_matcher: CompanyNameM
             assert abs(new_match[1] - old_match[1]) < 1e-6, "Similarity scores should be the same"
 
 
-def test_n_jobs_parameter(default_matcher, test_companies, tmp_path):
+def test_n_jobs_parameter(default_matcher: CompanyNameMatcher, test_companies: List[str], tmp_path: Path):
     # Build index
     index_dir = tmp_path / "test_njobs_index"
     default_matcher.build_index(test_companies, n_clusters=2, save_dir=str(index_dir))
