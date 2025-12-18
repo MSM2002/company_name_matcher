@@ -52,7 +52,7 @@ class VectorStore:
         n_clusters: int = 100,
         save_path: Optional[str] = None,
         overwrite: bool = True,
-    ):
+    ) -> None:
         """
         Build a KMeans clustering index for approximate nearest neighbor search.
 
@@ -95,7 +95,7 @@ class VectorStore:
         if save_path:
             self.save_index(save_path, overwrite=overwrite)
 
-    def save_index(self, save_path: str, overwrite: bool = True):
+    def save_index(self, save_path: str, overwrite: bool = True) -> None:
         """
         Save the embeddings, company names, and clustering index to disk.
 
@@ -140,7 +140,7 @@ class VectorStore:
 
         logger.info(f"Index saved to {save_path}")
 
-    def load_index(self, load_path: str):
+    def load_index(self, load_path: str) -> None:
         """
         Load embeddings, company names, and clustering index from disk.
 
@@ -269,7 +269,7 @@ class VectorStore:
         new_items: List[str],
         save_dir: Optional[str] = None,
         overwrite: bool = True,
-    ):
+    ) -> None:
         """
         Add new company names and embeddings to the store and optionally save the updated index.
 

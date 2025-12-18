@@ -83,6 +83,39 @@ jobs:
       run: |
         bandit -r src/ -c .bandit
 
+  type-check:
+    # run only when PR has 'under-review' label
+    if: github.event.pull_request.head.ref != 'dev' && !github.event.pull_request.draft && contains(github.event.pull_request.labels.*.name, 'under-review')
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-type-check-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-type-check-
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyright
+        pip install -r requirements.txt
+
+    - name: Run type checker
+      run: |
+        pyright src/
+
   validate-data:
     # run only when PR has 'under-review' label and contains data changes
     if: github.event.pull_request.head.ref != 'dev' && !github.event.pull_request.draft && contains(github.event.pull_request.labels.*.name, 'under-review')

@@ -199,7 +199,7 @@ class CompanyNameMatcher:
         company_list: List[str],
         n_clusters: int = 100,
         save_dir: Optional[str] = None,
-    ):
+    ) -> None:
         """
         Build a search index for a list of company names.
 
@@ -227,7 +227,7 @@ class CompanyNameMatcher:
 
         self.vector_store.build_index(n_clusters, save_dir)
 
-    def load_index(self, load_dir: str):
+    def load_index(self, load_dir: str) -> None:
         """
         Load a previously saved search index.
 
@@ -494,7 +494,7 @@ class CompanyNameMatcher:
 
         return result
 
-    def expand_index(self, new_company_list: List[str], save_dir: Optional[str] = None):
+    def expand_index(self, new_company_list: List[str], save_dir: Optional[str] = None) -> None:
         """
         Add new companies to an existing index.
 

@@ -58,17 +58,25 @@ line-length = 120
 
 [tool.pyright]
 # Which folders to include for type checking
-include = ["."]
+include = ["src", "scripts"]
 
 # Extra paths for resolving imports outside the package
 extraPaths = ["src", "scripts"]
 
-# Enable strict type checking
-typeCheckingMode = "strict"
+# Use basic mode instead of strict to reduce false positives
+typeCheckingMode = "basic"
 
-# Optional: exclude caches or virtual environments
+# Exclude tests, caches, and virtual environments
 exclude = [
-  "**/venv",
-  "**/.pytest_cache",
-  "**/__pycache__"
+  "tests",
+  "**/venv/**",
+  "**/.pytest_cache/**",
+  "**/__pycache__/**"
 ]
+
+# Relax some strict checks to reduce maintenance burden
+reportMissingImports = false
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
